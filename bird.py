@@ -31,13 +31,10 @@ class Bird(pygame.sprite.Sprite):
         self.alive = False
 
     def update(self):
-        if not self.alive:
-            return
-
         if not self.area.contains(self.rect) and self.rect.top > 0:
             self.kill()
-        else:
-            self._fall()
+        
+        self._fall()
 
     def _fall(self):
         """move the monkey across the screen, and turn at the ends"""
