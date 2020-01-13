@@ -24,8 +24,8 @@ def start():
     pygame.display.flip()
 
     bird = Bird()
-    # pipe = Pipe()
-    all_sprites = pygame.sprite.RenderPlain((bird))
+    pipe = Pipe()
+    all_sprites = pygame.sprite.RenderPlain((bird, pipe))
     clock = pygame.time.Clock()
 
     while True:
@@ -38,6 +38,8 @@ def start():
                 return
             elif event.type == KEYDOWN and event.key == K_SPACE:
                 bird.clicked()
+            elif event.type == KEYDOWN and event.key == K_r:
+                bird.restart()
             
 
         all_sprites.update()

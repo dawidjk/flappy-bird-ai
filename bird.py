@@ -13,47 +13,39 @@ class Bird(pygame.sprite.Sprite):
         self.area = screen.get_rect()
         self.rect.topleft = 150, 50
         
-        self.true_gravity = 5
-        self.fly_max = 30
+        self.start_speed = 5
+        self.fly_max = 15
         self.angle = 12
+        self.jump_speed = -10
+        self.gravity = 0.5
 
-        self.gravity = self.true_gravity
-        self.fly = False
-        self.fly_count = 0
+        self.vert_speed = self.start_speed
+        self.alive = True
+    
+    def restart(self):
+        self.rect.topleft = 150, 50
+        self.vert_speed = self.start_speed
         self.alive = True
 
+    def kill(self):
+        self.alive = False
+
     def update(self):
+        if not self.alive:
+            return
+
         if not self.area.contains(self.rect) and self.rect.top > 0:
-            self.alive = False
+            self.kill()
         else:
-            if self.fly:
-                self._fly()
-            else:
-                self._fall()
+            self._fall()
 
     def _fall(self):
         """move the monkey across the screen, and turn at the ends"""
-        self.rect = self.rect.move((0, self.gravity))
-        self.image = pygame.transform.rotate(self.original, -self.angle)
+        self.rect = self.rect.move((0, self.vert_speed))
+        self.image = pygame.transform.rotate(self.original, -self.vert_speed)
         self.rect = self.image.get_rect(center=self.rect.center)
-        self.gravity += 0.1
-
-    def _fly(self):
-        self.fly_count += 1
-        self.gravity -= 0.05
-
-        self.rect = self.rect.move((0, -self.gravity))
-        self.image = pygame.transform.rotate(self.original, self.angle)
-        self.rect = self.image.get_rect(center=self.rect.center)
-
-        if self.fly_count >= self.fly_max:
-            self.fly_count = 0
-            self.fly = False
-            self.gravity = self.true_gravity
+        self.vert_speed += self.gravity
 
     def clicked(self):
         """this will cause the monkey to start spinning"""
-        if not self.fly:
-            self.fly = True
-            self.fly_count = 0
-            self.gravity = self.true_gravity
+        self.vert_speed = self.jump_speed
