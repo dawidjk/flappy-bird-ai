@@ -21,6 +21,15 @@ class Pipe():
 
     def collide(self, target):
         return self.top.collide(target) or self.bottom.collide(target)
+    
+    def get_bottom(self):
+        return self.bottom.rect.top
+    
+    def get_top(self):
+        return self.top.rect.bottom
+
+    def get_dist(self):
+        return self.top.rect.left
 
 class PipeHalf(pygame.sprite.Sprite):
     def __init__(self, name, move_rate):

@@ -1,26 +1,28 @@
 import pygame
 from pygame.locals import *
 from resources import *
+import time
 
 class Bird(pygame.sprite.Sprite):
     """moves a monkey critter across the screen. it can spin the
        monkey when it is punched."""
-    def __init__(self):
+    def __init__(self, x=150, y=50):
         pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
         self.image, self.rect = load_image('bird.png', -1)
         self.original = self.image
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.rect.topleft = 150, 50
+        self.rect.center = x, y
         
         self.start_speed = 5
-        self.fly_max = 15
         self.angle = 12
         self.jump_speed = -10
         self.gravity = 0.5
 
         self.vert_speed = self.start_speed
         self.alive = True
+        self.time_of_death = 0
+        self.to_be_killed = False
     
     def restart(self):
         self.rect.topleft = 150, 50
@@ -29,10 +31,23 @@ class Bird(pygame.sprite.Sprite):
 
     def kill(self):
         self.alive = False
+        self.time_of_death = int(round(time.time() * 1000))
+    
+    def get_top(self):
+        return self.rect.top
+    
+    def get_bottom(self):
+        return self.rect.bottom
+    
+    def get_right(self):
+        return self.rect.right
+
+    def get_vert_speed(self):
+        return self.vert_speed
 
     def update(self):
-        if not self.area.contains(self.rect) and self.rect.top > 0:
-            self.kill()
+        if not self.area.contains(self.rect):
+            self.to_be_killed = True
         
         self._fall()
 
